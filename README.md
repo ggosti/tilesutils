@@ -3,15 +3,27 @@
 ## viewTiles.py
 
 viewTiles.py allows to view tiles of zstacks, define a plane with all tiles in focus. 
+Make viewTiles.py executable
+```
+chmod +777 viewTiles.py
+```
+To get help:
+```
+viewTiles.py -h
+```
 To create allignment parameters without stiching tiles, where ``folder/`` is the folder with the z-stack tiles:
 ```
-python viewTails0.3.py folder/ False
+./viewTile.py -l folder/ --show
 ```
 To create allignment parameters and stich tiles:
 ```
-python viewTails0.3.py folder/
+./viewTile.py -l folder/ --show --doTile
 ```
 
+To use existing allignment parameters and stich tiles:
+```
+./viewTile.py -l folder/ --doTile
+```
 
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
