@@ -1,4 +1,4 @@
-# Utilities for Tiles
+# Utilities for Z-stack Tiles
 
 ## viewTiles.py
 
