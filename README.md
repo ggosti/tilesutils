@@ -32,8 +32,14 @@ you can generate the mosaics with the subtracted background.
 ```
 tilesBgSub.py ref2/0521-1748-day3-ref2/
 ```
-To get all the mosaics.
-
+To get all the mosaics working directory must be the one with the folders of the z-stacks.
+```
+../getTiles-bgsub.py ref2
+```
+or 
+```
+../getTiles.py ref2
+```
 
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
