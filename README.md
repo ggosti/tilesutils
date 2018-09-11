@@ -2,7 +2,9 @@
 
 ## viewTiles.py
 
-viewTiles.py allows to view tiles of zstacks, define a plane with all tiles in focus. 
+``rename.py`` is for renaming the filse obtained from the z-stack experiment in the correct way.
+
+``viewTiles.py`` allows to view tiles of zstacks, define a plane with all tiles in focus. 
 Make viewTiles.py executable
 ```
 chmod +777 viewTiles.py
