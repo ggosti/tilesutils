@@ -25,6 +25,14 @@ To use existing allignment parameters and stich tiles:
 ./viewTile.py -l folder/ --doTile
 ```
 
+Unce you defined the correcte tile parameter (thus you generated the files ``folder-tilePars.csv`` and ``folder-focusPoints.csv`` with ``./viewTile.py -l folder/ --show``) 
+you can generate the mosaics with the subtracted background.
+```
+tilesBgSub.py ref2/0521-1748-day3-ref2/
+```
+To get all the mosaics.
+
+
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
 When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
