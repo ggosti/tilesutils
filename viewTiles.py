@@ -233,7 +233,7 @@ if show:
 
     def showTile(wName,im,zval,zBase,imMin,scale,font=font):
         img = np.uint8((im[zval-zBase,:,:]-imMin)*scale)
-        cv2.putText(img,str(zval),(10,200), font, 4,(255,255,255),2,cv2.CV_AA)
+        cv2.putText(img,str(zval),(10,200), font, 4,(255,255,255),2,cv2.LINE_AA)
         cv2.imshow(wName, img)
 
     while(1):
