@@ -110,7 +110,7 @@ for fileName2 in glob.glob(cwd+fileName+'x*.tif'):
             #print 'autofocus',autofocus,r
         rs.append(r)
         #print r
-        rs.append(r)
+        #rs.append(r)
 
 maxCs,maxRs = max(cs),max(rs)
 print maxCs,maxRs
