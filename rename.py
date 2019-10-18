@@ -17,8 +17,13 @@ def find_between( s, first, last ):
     except ValueError:
         return ""
 
-dirPics = sys.argv[1]
-print "Name of dir: ",  dirPics
+if len(sys.argv) > 1:
+    dirPics = sys.argv[1]
+    print "Name of dir: ",  dirPics
+else:
+    print "Add folder: rename.py folder/"
+    quit()
+
 
 os.chdir(dirPics)
 for fileName in glob.glob('*.scan'):
