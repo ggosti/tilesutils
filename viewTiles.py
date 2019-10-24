@@ -47,6 +47,9 @@ def getImName(autofocus,fileName,x,y):
             strNum = raw_input('Which (set number)?')
             pathIm = nList[strNum]
         else:
+            if len(nList) == 0:
+                print 'Error: strPat',fileName+'x'+str(x)+'y'+str(y)+'z*.tif'
+                quit()
             pathIm = nList[0]
         try:
             z = int(find_between( pathIm, 'z','.tif' ))
@@ -159,6 +162,7 @@ else:
         minzs[i-1] = minz
         zs[i-1] = minz + zs[i-1]
         print iName,minz
+
 a = float(zs[2]-zs[0])/(xs[2]-xs[0]) #
 b = float(zs[1]-zs[0])/(ys[1]-ys[0])
 print('Points x', xs,'y',ys,'z',zs,'iNames',iNames,'min z',minzs)
@@ -271,6 +275,17 @@ if show:
 
     df.to_csv(cwd+fileName+'-focusPoins.csv')
 
+#reseat maybe masked?
+#print ('-----------------------------')
+#print('zs',zs)
+#print('xs',xs)
+#print('ys',ys)
+#print ('-----------------------------')
+a = float(zs[2]-zs[0])/(xs[2]-xs[0]) #
+b = float(zs[1]-zs[0])/(ys[1]-ys[0])
+#print('a',a)
+#print('b',b)
+
 ###################################################
 # Load tiles parameters
 ###################################################
@@ -359,17 +374,21 @@ if show:
     #print tileS
     print len(tileS)
 
-    for r in range(1,numTRows+1):
+    dc=5
+    dr=5
+    for r in range(dc+1,numTRows+dc+1):
         print r, numIRows*(r-1),numIRows*(r)
-        for c in range(1,numTCols+1):
+        for c in range(dr+1,numTCols+dr+1):
             #print c, numICols*(c-1),numICols*(c)
-            iName,minz = getImName(autofocus,fileName,c+3,r+3)
+            iName,minz = getImName(autofocus,fileName,c,r)
             im = io.imread(iName)#cwd+fileName+'x'+str(c)+'y'+str(r)+'.tif')
             zVal = zFun(c,r,xs[0],ys[0],zs[0],a,b,minz,minz+im.shape[0])
+            #print 'check focus ',c,r,zVal,' minz ',minz,' deltaz ',zVal-minz,im.shape[0]
+            #print im.shape,iName
             #plt.figure()
             #plt.imshow(im[int(zs),:,:])
-            tileS[r-1][c-1] = im[zVal-minz,:,:]
-            indices[r-1][c-1] = (r,c)
+            tileS[r-1-dr][c-1-dc] = im[zVal-minz,:,:]
+            indices[r-1-dr][c-1-dc] = (r,c)
 
     print indices
     #print tileS
