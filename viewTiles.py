@@ -33,8 +33,8 @@ def getImName(autofocus,fileName,x,y):
             strPat = fileName + 'x' + str(x) + 'y' + str(y) + 'tiles*.tif'
             nList = glob.glob(cwd + strPat)
             if len(nList)>1:
-                print nList
-                strNum = raw_input('Which (set number)?')
+                print(nList)
+                strNum = input('Which (set number)?')
                 pathIm = nList[strNum]
             else:
                 pathIm = nList[0]
@@ -43,12 +43,12 @@ def getImName(autofocus,fileName,x,y):
         strPat = fileName+'x'+str(x)+'y'+str(y)+'z*.tif'
         nList = glob.glob(cwd+strPat)
         if len(nList)>1:
-            print nList
-            strNum = raw_input('Which (set number)?')
+            print(nList)
+            strNum = input('Which (set number)?')
             pathIm = nList[strNum]
         else:
             if len(nList) == 0:
-                print 'Error: strPat',fileName+'x'+str(x)+'y'+str(y)+'z*.tif'
+                print('Error: strPat',fileName+'x'+str(x)+'y'+str(y)+'z*.tif')
                 quit()
             pathIm = nList[0]
         try:
@@ -71,7 +71,7 @@ parser.add_argument('--doTile', help='Generate mosaic with tiles', action='store
 parser.add_argument('--show', help='Check and modify parameters', action='store_true')
 args = parser.parse_args()
 
-print args
+print( args)
 doTile = args.doTile
 show = args.show
 dirPics = args.l
@@ -83,9 +83,9 @@ dirPics = args.l
 #    if (sys.argv[2] == '-noShow'):
 #        doTile = True
 #        show = False
-print "Do show: ",  show
-print "Do Tile: ",  doTile
-print dirPics
+print( "Do show: ",  show)
+print("Do Tile: ",  doTile)
+print(dirPics)
 
 os.chdir(dirPics)
 for fileName in glob.glob('*.scan'):
@@ -116,7 +116,7 @@ for fileName2 in glob.glob(cwd+fileName+'x*.tif'):
         #rs.append(r)
 
 maxCs,maxRs = max(cs),max(rs)
-print maxCs,maxRs
+print('maxCs',maxCs,'maxRs',maxRs)
 
 def zFun(x,y,x0,y0,z0,a,b,zmin,zmax):
     z = int(round(z0 + (x-x0)*a + (y-y0)*b))
@@ -130,8 +130,8 @@ def zFun(x,y,x0,y0,z0,a,b,zmin,zmax):
 
 if os.path.isfile(cwd+fileName+'-focusPoins.csv'):
     df = pd.read_csv(cwd+fileName+'-focusPoins.csv')
-    print 'loaded points'
-    print df
+    print( 'loaded points')
+    print( df)
     iNames = df['img. name'].tolist()
     xs = df['x'].tolist()
     ys = df['y'].tolist()
@@ -144,12 +144,12 @@ else:
     minzs = [0,0,0]
     iNames = [None,None,None]
     for i,x,y in zip(range(1,4),xs,ys):
-        ans = raw_input('Set point '+str(i)+' different from: ('+str(x)+','+str(y)+') ? (y/n/point)')
+        ans = input('Set point '+str(i)+' different from: ('+str(x)+','+str(y)+') ? (y/n/point)')
         ans = ans.split(',')
         #print ans
         if ans[0] == 'y':
-            x = int(raw_input('Enter your point '+str(i)+' x: '))
-            y = int(raw_input('Enter your point '+str(i)+' y: '))
+            x = int(input('Enter your point '+str(i)+' x: '))
+            y = int(input('Enter your point '+str(i)+' y: '))
             xs[i-1] = x 
             ys[i-1] = y
         elif len(ans) == 2:
@@ -161,7 +161,7 @@ else:
         iNames[i-1] =iName
         minzs[i-1] = minz
         zs[i-1] = minz + zs[i-1]
-        print iName,minz
+        print(iName,minz)
 
 a = float(zs[2]-zs[0])/(xs[2]-xs[0]) #
 b = float(zs[1]-zs[0])/(ys[1]-ys[0])
@@ -173,34 +173,32 @@ print('Points x', xs,'y',ys,'z',zs,'iNames',iNames,'min z',minzs)
 
 pathIm1 = iNames[0]
 im1 = io.imread(pathIm1)
-print
-'Point1 : ', pathIm1
+print('Point1 : ', pathIm1)
 
 if show:
     chx, chy = 9, 9
-    ans = raw_input('Set check point different from: (' + str(chx) + ',' + str(chy) + ') ? (y/n)')
+    ans = input('Set check point different from: (' + str(chx) + ',' + str(chy) + ') ? (y/n)')
     ans = ans.split(',')
-    print
-    ans
+    print(ans)
     if ans[0] == 'y':
-        chx = int(raw_input('Enter your point ' + str(i) + ' x: '))
-        chy = int(raw_input('Enter your point ' + str(i) + ' y: '))
+        chx = int(input('Enter your point ' + str(i) + ' x: '))
+        chy = int(input('Enter your point ' + str(i) + ' y: '))
     elif len(ans) == 2:
         chx, chy = int(ans[0]), int(ans[-1])
     print('Check Point ', chx, chy)
 
     pathIm2 = iNames[1]
     im2 = io.imread(pathIm2)
-    print 'Point2 : ',pathIm2
+    print('Point2 : ',pathIm2)
 
     pathIm3 = iNames[2]
     im3 = io.imread(pathIm3)
-    print 'Point3 : ',pathIm3
+    print('Point3 : ',pathIm3)
 
 
     pathImC, zCh = getImName(autofocus,fileName,chx,chy)
     imC = io.imread(pathImC)
-    print 'Check Point : ',pathImC,zCh
+    print('Check Point : ',pathImC,zCh)
 
     print('zstack size',im1.shape[0],im2.shape[0],im3.shape[0])
 
@@ -220,7 +218,7 @@ if show:
     imMin1 = im1.min()
     imMax1 = im1.max()
     scale1 = 255.0/float(imMax1-imMin1)#float(mii-1)
-    print(((im1-imMin1)*scale1).max() )
+    #print('max ', ((im1-imMin1)*scale1).max() )
     imMin2 = im2.min()
     imMax2 = im2.max()
     scale2 = 255.0/float(imMax2-imMin2)#float(mii-1)
@@ -257,14 +255,14 @@ if show:
         k = cv2.waitKey(1) & 0xFF
         zs = [zval1,zval2,zval3]
         if not (np.array(zOld) == np.array(zs + [zcheck])).all():
-            print zval1,zval2,zval3
-            print zcheck,zcheck-zCh
+            print(zval1,zval2,zval3)
+            print(zcheck,zcheck-zCh)
             zOld = zs + [zcheck]
         if k == 27:
             break
     cv2.destroyAllWindows()
     
-    print xs,ys,zs
+    print('xs,ys,zs', xs,ys,zs)
     df = pd.DataFrame(
         {'img. name':iNames,
          'x': xs,
@@ -292,8 +290,8 @@ b = float(zs[1]-zs[0])/(ys[1]-ys[0])
 
 if os.path.isfile(cwd+fileName+'-tilePars.csv'):
     df = pd.read_csv(cwd+fileName+'-tilePars.csv')
-    print 'loaded points'
-    print df
+    print('loaded points')
+    print(df)
     angle = df['angle'].values[0]
     overlap = df['overlap'].values[0]
     lres = df['lres'].values[0]
@@ -367,17 +365,17 @@ if show:
     trows = int(numIRows*numTRows*lres)
     tile = np.zeros((trows+100,tcols+100),dtype=np.uint16)
     print('tile size ',tile.shape)
-    print 'Img. shape ',numIRows, numICols
+    print('Img. shape ',numIRows, numICols)
     #tileS = [[np.zeros( (numICols,numIRows) )] * numTRows for ncols in range(numTCols)]
     indices = [[(-1,-1)] * numTCols for nrows in range(numTRows)]
     tileS = [[np.zeros( (numICols,numIRows) )] * numTCols for nrows in range(numTRows)]
     #print tileS
-    print len(tileS)
+    print(len(tileS))
 
     dc=5
     dr=5
     for r in range(dc+1,numTRows+dc+1):
-        print r, numIRows*(r-1),numIRows*(r)
+        print(r, numIRows*(r-1),numIRows*(r))
         for c in range(dr+1,numTCols+dr+1):
             #print c, numICols*(c-1),numICols*(c)
             iName,minz = getImName(autofocus,fileName,c,r)
@@ -390,7 +388,7 @@ if show:
             tileS[r-1-dr][c-1-dc] = im[zVal-minz,:,:]
             indices[r-1-dr][c-1-dc] = (r,c)
 
-    print indices
+    print('indices',indices)
     #print tileS
 
     cv2.namedWindow('Tile', cv2.WINDOW_NORMAL)
@@ -411,8 +409,8 @@ if show:
         overlap = float( percoverlap ) /100.0
         angle = float(angleTbarVal -10 ) / 10.0
         if (not ovOld == overlap) or (not ovAng == angle):
-            print 'new overlap',overlap
-            print 'new angle',angle
+            print('new overlap',overlap)
+            print('new angle',angle)
             ovOld = overlap
             ovAng = angle
             #print overlap
@@ -431,7 +429,7 @@ if show:
     cv2.destroyAllWindows()
 
 
-    print overlap,angle
+    print( overlap,angle)
     df2 = pd.DataFrame(
         {'overlap': [overlap],
          'angle': [angle],
@@ -444,18 +442,18 @@ if show:
 # make tiles
 ##########################################
 
-print 'doTile',doTile
+print('doTile',doTile)
 if doTile:
     numTRows = maxRs
     numTCols= maxCs
     numIRows = im1.shape[1]
     numICols = im1.shape[2]
-    print 'Img. shape ',numIRows, numICols
+    print('Img. shape ',numIRows, numICols)
     #tileS = [[np.zeros( (numICols,numIRows) )] * numTRows for ncols in range(numTCols)]
     indices = [[(-1,-1)] * numTCols for nrows in range(numTRows)]
     tileS = [[np.zeros( (numICols,numIRows) )] * numTCols for nrows in range(numTRows)]
     #print tileS
-    print len(tileS)
+    print( len(tileS))
 
     def pasteTile(r,c,tile,tIm,overlap,lres,numTRows,numIRows,numTCols,numICols,angle):
         resSk = int(1.0/lres)
@@ -477,7 +475,7 @@ if doTile:
     tile = np.zeros((trows+100,tcols+100))
 
     for r in range(1,numTRows+1):
-        print r, numIRows*(r-1),numIRows*(r)
+        print( r, numIRows*(r-1),numIRows*(r))
         for c in range(1,numTCols+1):
             #print c, numICols*(c-1),numICols*(c)
             #im = io.imread(cwd+fileName+'x'+str(c)+'y'+str(r)+'.tif')
@@ -485,9 +483,9 @@ if doTile:
             im = io.imread(iName)
             zVal = zFun(c,r,xs[0],ys[0],zs[0],a,b,minz,minz+im.shape[0])
             if zVal-minz > im.shape[0]:
-                print 'zVal to large!!',zVal,int(zVal),'pos',c,r,'file',iName
+                print('zVal to large!!',zVal,int(zVal),'pos',c,r,'file',iName)
             if zVal-minz < 0:
-                print 'zVal to small!!',zVal,int(zVal),'pos',c,r,'file',iName
+                print('zVal to small!!',zVal,int(zVal),'pos',c,r,'file',iName)
             #plt.figure()
             #plt.imshow(im[int(zs),:,:])
             pasteTile(r,c,tile,im[zVal-minz,:,:] ,overlap,lres,numTRows,numIRows,numTCols,numICols,angle)

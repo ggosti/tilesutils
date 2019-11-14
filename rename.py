@@ -19,9 +19,9 @@ def find_between( s, first, last ):
 
 if len(sys.argv) > 1:
     dirPics = sys.argv[1]
-    print "Name of dir: ",  dirPics
+    print("Name of dir: ",  dirPics)
 else:
-    print "Add folder: rename.py folder/"
+    print("Add folder: rename.py folder/")
     quit()
 
 
@@ -55,7 +55,7 @@ for fileName2 in glob.glob(cwd+'/'+newPat+'x*.tif'):
         rs.append(r)
 
 maxCs,maxRs = max(cs),max(rs)
-print maxCs,maxRs
+print('maxCs',maxCs,'maxRs',maxRs)
 
 for fileName2 in glob.glob(cwd+'/'+newPat+'x*.tif'):
     if not 'tiles' in fileName2:
