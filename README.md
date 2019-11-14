@@ -1,8 +1,14 @@
 # Utilities for Z-stack Tiles
 
-## viewTiles.py
+## rename.py
 
-``rename.py`` is for renaming the filse obtained from the z-stack experiment in the correct way.
+``rename.py`` is a script that renames the files obtained from the z-stack experiment in the correct way according to the directory. Assuming that the name of the folder with the z-stacks is `folder/`. I would name my folder adding to the name the date, the time, and the reference, e.g., `1022-1315-day3-ref1/`. 
+
+```
+python rename.py folder/
+```
+
+## viewTiles.py
 
 ``viewTiles.py`` allows to view tiles of zstacks, define a plane with all tiles in focus. 
 Make viewTiles.py executable
