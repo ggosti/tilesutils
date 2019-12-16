@@ -60,6 +60,19 @@ def getImName(autofocus,fileName,x,y):
                 z = int(find_between( pathIm, 'z','tiles' ))
     return pathIm,z
 
+def checkPoint(maxx,maxy,i):
+    chx, chy = np.random.randint(1,maxx), np.random.randint(1,maxy)
+    ans = input('Set check point different from: (' + str(chx) + ',' + str(chy) + ') ? (y/n)')
+    ans = ans.split(',')
+    print(ans)
+    if ans[0] == 'y':
+        chx = int(input('Enter your check point ' + str(i) + ' x: '))
+        chy = int(input('Enter your check point ' + str(i) + ' y: '))
+    elif len(ans) == 2:
+        chx, chy = int(ans[0]), int(ans[-1])
+    print('Check Point ', chx, chy)
+    return chx, chy
+
 autofocus = False
 #doTile = True
 #show = True
@@ -176,16 +189,12 @@ im1 = io.imread(pathIm1)
 print('Point1 : ', pathIm1)
 
 if show:
-    chx, chy = 9, 9
-    ans = input('Set check point different from: (' + str(chx) + ',' + str(chy) + ') ? (y/n)')
-    ans = ans.split(',')
-    print(ans)
-    if ans[0] == 'y':
-        chx = int(input('Enter your point ' + str(i) + ' x: '))
-        chy = int(input('Enter your point ' + str(i) + ' y: '))
-    elif len(ans) == 2:
-        chx, chy = int(ans[0]), int(ans[-1])
-    print('Check Point ', chx, chy)
+    chx0, chy0 = checkPoint(maxCs,maxRs,0)
+    chx1, chy1 = checkPoint(maxCs,maxRs,1)
+    chx2, chy2 = checkPoint(maxCs,maxRs,2)
+    chx3, chy3 = checkPoint(maxCs,maxRs,3)
+    chxs = [chx0,chx1,chx2,chx3]
+    chys = [chy0,chy1,chy2,chy3]
 
     pathIm2 = iNames[1]
     im2 = io.imread(pathIm2)
@@ -196,9 +205,15 @@ if show:
     print('Point3 : ',pathIm3)
 
 
-    pathImC, zCh = getImName(autofocus,fileName,chx,chy)
-    imC = io.imread(pathImC)
-    print('Check Point : ',pathImC,zCh)
+    imCs = []
+    zChs = []
+    for chxi,chyi in zip(chxs,chys):
+        pathImCi, zChi = getImName(autofocus,fileName,chxi,chyi)
+        imCi = io.imread(pathImCi)
+        print('Check Point 0: ',pathImCi,zChi)
+        imCs.append(imCi)
+        zChs.append(zChi)
+
 
     print('zstack size',im1.shape[0],im2.shape[0],im3.shape[0])
 
@@ -211,7 +226,8 @@ if show:
     cv2.createTrackbar('Z', 'Point2', zs[1]-zBase2, im2.shape[0]-1, nothing)
     cv2.namedWindow('Point3', cv2.WINDOW_NORMAL)
     cv2.createTrackbar('Z', 'Point3', zs[2]-zBase3, im3.shape[0]-1, nothing)
-    cv2.namedWindow('Check', cv2.WINDOW_NORMAL)
+    for i in range(len(imCs)):
+        cv2.namedWindow('Check '+str(i), cv2.WINDOW_NORMAL)
     #cv2.createTrackbar('Z', 'Check', zcheck, imC.shape[0], nothing)
 
     # Do whatever you want with contours
@@ -226,11 +242,15 @@ if show:
     imMax3 = im3.max()
     scale3 = 255.0/float(imMax3-imMin3)#float(mii-1)
 
-
-    imMinC = imC.min()
-    imMaxC = imC.max()
-    scaleC = 255.0/float(imMaxC-imMinC)
-    zOld = [0,0,0,0]
+    imMinCs = []
+    scaleCs = []
+    for imC in imCs:
+        imMinC = imC.min()
+        imMaxC = imC.max()
+        scaleC = 255.0/float(imMaxC-imMinC)
+        imMinCs.append(imMinC)
+        scaleCs.append(scaleC)
+    zOld = [0]*(3+len(imCs))
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     def showTile(wName,im,zval,zBase,imMin,scale,font=font):
@@ -238,10 +258,14 @@ if show:
         cv2.putText(img,str(zval),(10,200), font, 4,(255,255,255),2,cv2.LINE_AA)
         cv2.imshow(wName, img)
 
+
     while(1):
         a = float(zs[2]-zs[0])/(xs[2]-xs[0]) #
         b = float(zs[1]-zs[0])/(ys[1]-ys[0])
-        zcheck = zFun(chx,chy,xs[0],ys[0],zs[0],a,b,zCh,zCh+imC.shape[0])
+        zchecks = []
+        for chx,chy,zCh,imC in zip(chxs,chys,zChs,imCs):
+            zcheck = zFun(chx,chy,xs[0],ys[0],zs[0],a,b,zCh,zCh+imC.shape[0])
+            zchecks.append(zcheck)
         #print 'zs',zs,zcheck
         zval1 = cv2.getTrackbarPos('Z','Point1') + zBase1
         showTile('Point1',im1,zval1,zBase1,imMin1,scale1)
@@ -251,13 +275,18 @@ if show:
         zval3 = cv2.getTrackbarPos('Z','Point3') + zBase3
         showTile('Point3',im3,zval3,zBase3,imMin3,scale3)
         #cv2.imshow('Point3', np.uint8((im3[zval3-zBase3,:,:]-imMin3)*scale3) )
-        showTile('Check',imC,zcheck,zCh,imMinC,scaleC)
+        for i,imC,zcheck,zCh,imMinC,scaleC in zip(range(len(imCs)),imCs,zchecks,zChs,imMinCs,scaleCs):
+            showTile('Check '+str(i),imC,zcheck,zCh,imMinC,scaleC)
         k = cv2.waitKey(1) & 0xFF
-        zs = [zval1,zval2,zval3]
-        if not (np.array(zOld) == np.array(zs + [zcheck])).all():
+        zs = [zval1,zval2,zval3] + zchecks
+        #print(np.array(zOld))
+        #print(np.array(zs))
+        #print(( np.array(zOld) == np.array(zs) ))
+        if not ( np.array(zOld) == np.array(zs) ).all():
             print(zval1,zval2,zval3)
-            print(zcheck,zcheck-zCh)
-            zOld = zs + [zcheck]
+            for zcheck,zCh in zip(zchecks,zChs):
+                print(zcheck,zcheck-zCh)
+            zOld = zs
         if k == 27:
             break
     cv2.destroyAllWindows()
@@ -267,7 +296,7 @@ if show:
         {'img. name':iNames,
          'x': xs,
          'y': ys,
-         'z': zs,
+         'z': zs[0:len(xs)],
          'min z': minzs
         })
 
